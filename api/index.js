@@ -1,27 +1,27 @@
-const express = require('express');
-const connectToDb = require('./utilis/db');
-const userRouter = require('./routes/user.route');
+const express = require('express')
+const app = express()
+var cors = require('cors')
+require('dotenv').config()
 const cookieParser = require('cookie-parser');
-const notesRouter = require('./routes/note.route');
 
-require('dotenv').config();
-const port = process.env.PORT || 5000;
 
-const app = express();
-
+const port = process.env.PORT || 3000
 app.use(cookieParser());
-app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}))
 
-app.use('/api/user', userRouter);
-app.use('/api/notes', notesRouter);
+app.use(express.json())
+const connectDB = require('./utils/db');
+const connectToDb = require('./utils/db');
 
-app.listen(port, async () => {
-    try {
-        await connectToDb();
-        console.log(`Server is running on port ${port}`);
-    } catch (error) {
-        console.log(`Error starting server: ${error.message}`);
 
-    }
+app.use('/user', require('./routes/user.route.js'))
+app.use('/note', require('./routes/note.route.js'))
 
+
+app.listen(port, () => {
+  connectToDb();
+  console.log(`Example app listening on port ${port}`)
 })
